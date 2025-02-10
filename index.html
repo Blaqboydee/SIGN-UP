@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign Up</title>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+    />
+    <style>
+      * {
+        box-sizing: border-box;
+        padding: 0;
+        margin: 0;
+      }
+
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+      }
+
+      .container {
+        background-color: white;
+        height: 70vh;
+        width: 600px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 15px;
+        padding: 40px;
+        border-radius: 15px;
+        /* border: 1px solid black; */
+        box-shadow: 5px 5px 15px rgb(80, 78, 78);
+        font-family: Georgia, "Times New Roman", Times, serif;
+      }
+
+      #email, #username {
+        width: 70%;
+        height: 35px;
+        border-radius: 0px;
+        border: 1px solid black;
+        outline: 0;
+        /* padding: 0 5px; */
+        font-family: Georgia, "Times New Roman", Times, serif;
+        border-radius: 5px;
+        height: 42px;
+        padding: 0 10px;
+      }
+
+      .agree {
+        width: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .agree input {
+        height: 20px;
+        width: 15px;
+        font-family: Georgia, "Times New Roman", Times, serif;
+        cursor: pointer;
+      }
+
+      .pass {
+        width: 70%;
+        border-radius: 5px;
+        border: 1px solid black;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 42px;
+        padding: 0 10px;
+      }
+
+      .pass input {
+        border: none;
+        font-family: Georgia, "Times New Roman", Times, serif;
+        width: 80%;
+        outline: none;
+        height: 30px;
+      }
+
+      #output, #passwordCheck {
+        color: red;
+      }
+
+      #sign-up {
+        background-color: blue;
+        color: white;
+        font-family: Georgia, "Times New Roman", Times, serif;
+        padding: 5px 10px;
+        border-radius: 5px;
+        border: none;
+        cursor: pointer;
+        font-size: 15px;
+      }
+
+      h2 {
+        font-family: Georgia, "Times New Roman", Times, serif;
+        font-size: 30px;
+      }
+
+      .pass button {
+        background: none;
+        border: none;
+      }
+
+      .pass button span {
+        font-weight: 100;
+        font-size: 20px;
+      }
+
+      input::placeholder {
+        letter-spacing: 2px;
+        font-size: 15px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Sign Up</h2>
+      <input type="text" id="username" placeholder="Username" />
+      <input type="email" id="email" placeholder="Email" />
+
+      <div class="pass">
+        <input type="password" name="" id="password" placeholder="Password" oninput="showPasswordVisibilty()"/>
+        <button id="passwordBtn" onclick="showPassword()"></button>
+      </div>
+      <div class="pass">
+        <input type="password" id="confirmPassword" placeholder="Confirm Password" oninput="showVisibilty()"/>
+        <button id="confirmPasswordBtn" onclick="showConfirmPassword()"></button>
+      </div>
+      <div id="passwordCheck"></div>
+      <div class="agree">
+        <input type="checkbox" id="myCheckbox" /><span
+          >Agree to terms and conditions</span
+        >
+      </div>
+
+      <button id="sign-up" onclick="signUp()">Sign Up</button>
+      <div id="output"></div>
+    </div>
+  </body>
+</html>
+
+<script>
+
+
+  let userData = [];
+  function signUp() {
+    let userEmail = email.value.trim();
+    let userPassword = password.value.trim();
+    let userConfirmPassword = confirmPassword.value.trim();
+    let userName = username.value.trim()
+    let checkbox = document.getElementById("myCheckbox");
+   
+
+    if (!userEmail || !userPassword || !userConfirmPassword) {
+      output.innerHTML = "All fields are mandatory";
+    } else if (userPassword.length < 8) {
+      output.innerHTML = "Pasword cannot be less than 8 characters";
+    } else if (userPassword !== userConfirmPassword) {
+      passwordCheck.innerHTML = "Passwords do not match";
+      output.innerHTML = "";
+    } else if (!checkbox.checked) {
+      output.innerHTML = "Kindly agree to our terms and Conditions";
+    } else {
+      output.innerHTML = "";
+      passwordCheck.innerHTML = "";
+      let user = {
+        Username: userName,
+        Email: userEmail,
+        Password: userPassword,
+      };
+
+      userData.push(user);
+
+      console.log(userData);
+
+      email.value = "";
+      password.value = "";
+      confirmPassword.value = "";
+      username.value = "";
+      checkbox.checked = false;
+
+    }
+
+  }
+
+  function showPassword() {
+    let userPass = document.getElementById("password");
+
+
+    if (userPass.type === "password") {
+      userPass.type = "text";
+      passwordBtn.innerHTML = `<span class="material-symbols-outlined"> visibility_off </span>`
+    } else {
+      userPass.type = "password";
+      passwordBtn.innerHTML = `<span class="material-symbols-outlined"> visibility </span>`
+    }
+  }
+
+  function showConfirmPassword() {
+    let userConfirmPass = document.getElementById("confirmPassword");
+
+    if (userConfirmPass.type === "password") {
+      userConfirmPass.type = "text";
+     confirmPasswordBtn.innerHTML = `<span class="material-symbols-outlined"> visibility_off </span>`
+      
+    } else {
+      userConfirmPass.type = "password";
+      confirmPasswordBtn.innerHTML = '<span class="material-symbols-outlined"> visibility </span>'
+    }
+  }
+
+
+
+  function showVisibilty() {
+    confirmPasswordBtn.innerHTML = `<span class="material-symbols-outlined"> visibility </span>`
+  }
+
+    
+     function showPasswordVisibilty() {
+     passwordBtn.innerHTML = `<span class="material-symbols-outlined"> visibility </span>`
+  }
+</script>
