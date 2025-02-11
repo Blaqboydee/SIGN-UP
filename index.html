@@ -17,9 +17,8 @@
 
       body {
         display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 100vh;
+        background-color: rgba(162, 158, 158, 0.435);
+
       }
 
       .container {
@@ -34,11 +33,13 @@
         padding: 40px;
         border-radius: 15px;
         /* border: 1px solid black; */
-        box-shadow: 5px 5px 15px rgb(80, 78, 78);
+        box-shadow: 0px 0px 15px rgba(153, 151, 151, 0.392);
         font-family: Georgia, "Times New Roman", Times, serif;
+        margin: 20px;
       }
 
-      #email, #username {
+      #email,
+      #username {
         width: 70%;
         height: 35px;
         border-radius: 0px;
@@ -85,7 +86,8 @@
         height: 30px;
       }
 
-      #output, #passwordCheck {
+      #output,
+      #passwordCheck {
         color: red;
       }
 
@@ -119,8 +121,45 @@
         letter-spacing: 2px;
         font-size: 15px;
       }
+
+      table {
+        margin: 5px;
+        border-collapse: collapse;
+
+      }
+
+      th,
+      td {
+        border: 1px solid black;
+        padding: 8px;
+        font-family: Georgia, "Times New Roman", Times, serif;
+        font-size: 15px;
+      }
+
+
+      #tables{
+        margin-top: 55px;
+        width: 30%;
+      }
+
+      .buttons{
+        display: flex;
+        justify-content: space-between;
+      }
+
+
+      .buttons button{
+        background: black;
+        color: white;
+        font-family: Georgia, "Times New Roman", Times, serif;
+       padding: 5px;
+       font-size: 15px;
+       border: 2px solid gray;
+       cursor: pointer;
+      }
     </style>
   </head>
+
   <body>
     <div class="container">
       <h2>Sign Up</h2>
@@ -128,12 +167,26 @@
       <input type="email" id="email" placeholder="Email" />
 
       <div class="pass">
-        <input type="password" name="" id="password" placeholder="Password" oninput="showPasswordVisibilty()"/>
+        <input
+          type="password"
+          name=""
+          id="password"
+          placeholder="Password"
+          oninput="showPasswordVisibilty()"
+        />
         <button id="passwordBtn" onclick="showPassword()"></button>
       </div>
       <div class="pass">
-        <input type="password" id="confirmPassword" placeholder="Confirm Password" oninput="showVisibilty()"/>
-        <button id="confirmPasswordBtn" onclick="showConfirmPassword()"></button>
+        <input
+          type="password"
+          id="confirmPassword"
+          placeholder="Confirm Password"
+          oninput="showVisibilty()"
+        />
+        <button
+          id="confirmPasswordBtn"
+          onclick="showConfirmPassword()"
+        ></button>
       </div>
       <div id="passwordCheck"></div>
       <div class="agree">
@@ -145,20 +198,21 @@
       <button id="sign-up" onclick="signUp()">Sign Up</button>
       <div id="output"></div>
     </div>
+
+    <div id="tables"></div>
   </body>
 </html>
 
 <script>
-
-
   let userData = [];
+
+      
   function signUp() {
     let userEmail = email.value.trim();
     let userPassword = password.value.trim();
     let userConfirmPassword = confirmPassword.value.trim();
-    let userName = username.value.trim()
+    let userName = username.value.trim();
     let checkbox = document.getElementById("myCheckbox");
-   
 
     if (!userEmail || !userPassword || !userConfirmPassword) {
       output.innerHTML = "All fields are mandatory";
@@ -167,41 +221,164 @@
     } else if (userPassword !== userConfirmPassword) {
       passwordCheck.innerHTML = "Passwords do not match";
       output.innerHTML = "";
-    } else if (!checkbox.checked) {
-      output.innerHTML = "Kindly agree to our terms and Conditions";
+      // } else if (!checkbox.checked) {
+      //   output.innerHTML = "Kindly agree to our terms and Conditions";
+    } else if (userData.find((userObject) => userObject.Email == userEmail)) {
+      output.innerHTML = "User already exists";
     } else {
       output.innerHTML = "";
       passwordCheck.innerHTML = "";
+
       let user = {
         Username: userName,
         Email: userEmail,
         Password: userPassword,
+        isAgreed: checkbox.checked,
       };
 
       userData.push(user);
 
       console.log(userData);
 
-      email.value = "";
-      password.value = "";
-      confirmPassword.value = "";
-      username.value = "";
-      checkbox.checked = false;
+      tables.innerHTML = `
+      <div class="buttons"><button onclick="allUsers(userData)">All Users</button><button onclick="agreed(true)">Agreed to Terms</button> <button onclick="disagree(false)">Do not agree to terms</button></div>
+      <table>
+        <thead>
+          <tr>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Password</th>
+            <th>Terms</th>
+            </tr>
+          </thead>
 
+          <tbody id="tableBody">
+            </tbody>
+        </table>`;
+
+      for (let index = 0; index < userData.length; index++) {
+        tableBody.innerHTML += `<tr>
+            <td>${userData[index].Username}</td>
+            <td>${userData[index].Email}</td>
+            <td>${userData[index].Password}</td>
+            <td>${userData[index].isAgreed}</td>
+            </tr>`;
+      }
     }
+  }
 
+  function allUsers() {
+    tables.innerHTML = `
+      <div class="buttons"><button onclick="allUsers()">All Users</button><button onclick="agreed(true)">Agreed to Terms</button><button onclick="disagree(false)">Do not agree to terms</button></div>
+      <table>
+        <thead>
+          <tr>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Password</th>
+            <th>Terms</th>
+            </tr>
+          </thead>
+
+          <tbody id="tableBody">
+            </tbody>
+        </table>`;
+
+    for (let index = 0; index < userData.length; index++) {
+      tableBody.innerHTML += `<tr>
+            <td>${userData[index].Username}</td>
+            <td>${userData[index].Email}</td>
+            <td>${userData[index].Password}</td>
+            <td>${userData[index].isAgreed}</td>
+            </tr>`;
+    }
+  }
+
+  function agreed(checker) {
+
+   
+
+    let hasAgreed = userData.filter((individual) => individual.isAgreed == checker);
+
+    if (hasAgreed.length === 0) {
+      tables.innerHTML = 
+      `<div class="buttons"><button onclick="allUsers(userData)">All Users</button><button onclick="agreed(true)">Agreed to Terms</button><button onclick="disagree(false)">Do not agree to terms</button> </div>
+      <p>No user has accepted terms and conditions</p>`
+    } else{
+    tables.innerHTML = `
+      <div class="buttons"><button onclick="allUsers(userData)">All Users</button><button onclick="agreed(true)">Agreed to Terms</button><button onclick="disagree(false)">Do not agree to terms</button> </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Password</th>
+            <th>Terms</th>
+            </tr>
+          </thead>
+
+          <tbody id="tableBody">
+            </tbody>
+        </table>`;
+
+    for (let index = 0; index < hasAgreed.length; index++) {
+      tableBody.innerHTML += `<tr>
+            <td>${hasAgreed[index].Username}</td>
+            <td>${hasAgreed[index].Email}</td>
+            <td>${hasAgreed[index].Password}</td>
+            <td>${hasAgreed[index].isAgreed}</td>
+            </tr>`;
+    }
+  }
+  }
+
+  
+  function disagree(disagree) {
+    let hasDisagreed = userData.filter((individual) => individual.isAgreed == disagree);
+   
+    if (hasDisagreed.length === 0) {
+      tables.innerHTML = 
+      `<div class="buttons"><button onclick="allUsers(userData)">All Users</button><button onclick="agreed(true)">Agreed to Terms</button><button onclick="disagree(false)">Do not agree to terms</button> </div>
+      <p>All users accepted terms and conditions</p>`
+   
+    } else{
+
+    tables.innerHTML = `
+      <div class="buttons"><button onclick="allUsers(userData)">All Users</button><button onclick="agreed(true)">Agreed to Terms</button><button onclick="disagree(false)">Do not agree to terms</button> </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Password</th>
+            <th>Terms</th>
+            </tr>
+          </thead>
+
+          <tbody id="tableBody">
+            </tbody>
+        </table>`;
+
+    for (let index = 0; index < hasDisagreed.length; index++) {
+      tableBody.innerHTML += `<tr>
+            <td>${hasDisagreed[index].Username}</td>
+            <td>${hasDisagreed[index].Email}</td>
+            <td>${hasDisagreed[index].Password}</td>
+            <td>${hasDisagreed[index].isAgreed}</td>
+            </tr>`;
+    }
+  }
   }
 
   function showPassword() {
     let userPass = document.getElementById("password");
 
-
     if (userPass.type === "password") {
       userPass.type = "text";
-      passwordBtn.innerHTML = `<span class="material-symbols-outlined"> visibility_off </span>`
+      passwordBtn.innerHTML = `<span class="material-symbols-outlined"> visibility_off </span>`;
     } else {
       userPass.type = "password";
-      passwordBtn.innerHTML = `<span class="material-symbols-outlined"> visibility </span>`
+      passwordBtn.innerHTML = `<span class="material-symbols-outlined"> visibility </span>`;
     }
   }
 
@@ -210,22 +387,19 @@
 
     if (userConfirmPass.type === "password") {
       userConfirmPass.type = "text";
-     confirmPasswordBtn.innerHTML = `<span class="material-symbols-outlined"> visibility_off </span>`
-      
+      confirmPasswordBtn.innerHTML = `<span class="material-symbols-outlined"> visibility_off </span>`;
     } else {
       userConfirmPass.type = "password";
-      confirmPasswordBtn.innerHTML = '<span class="material-symbols-outlined"> visibility </span>'
+      confirmPasswordBtn.innerHTML =
+        '<span class="material-symbols-outlined"> visibility </span>';
     }
   }
 
-
-
   function showVisibilty() {
-    confirmPasswordBtn.innerHTML = `<span class="material-symbols-outlined"> visibility </span>`
+    confirmPasswordBtn.innerHTML = `<span class="material-symbols-outlined"> visibility </span>`;
   }
 
-    
-     function showPasswordVisibilty() {
-     passwordBtn.innerHTML = `<span class="material-symbols-outlined"> visibility </span>`
+  function showPasswordVisibilty() {
+    passwordBtn.innerHTML = `<span class="material-symbols-outlined"> visibility </span>`;
   }
 </script>
